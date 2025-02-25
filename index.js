@@ -41,14 +41,14 @@ export default {
         我的优选 = [...new Set(我的优选)];
       }
       if (url.pathname === `/${哎呀呀这是我的ID啊}`) {
-        let 配置文件;
-        const userAgent = 访问请求.headers.get("User-Agent").toLowerCase();
-        if (userAgent.includes("v2ray")) {
-          配置文件 = 给我通用配置文件(访问请求.headers.get("Host"));
-        } else if (userAgent.includes("clash")) {
-          配置文件 = 给我小猫咪配置文件(访问请求.headers.get("Host"));
-        }
-        return new Response(`${配置文件}`, {
+        const 用户代理 = 访问请求.headers.get("User-Agent").toLowerCase();
+        const 配置生成器 = {
+          v2ray: 给我通用配置文件,
+          clash: 给我小猫咪配置文件,
+        };
+        const 工具 = Object.keys(配置生成器).find((工具) => 用户代理.includes(工具));
+        const 生成配置 = 配置生成器[工具];
+        return new Response(生成配置(访问请求.headers.get("Host")), {
           status: 200,
           headers: { "Content-Type": "text/plain;charset=utf-8" },
         });
@@ -64,9 +64,7 @@ async function 升级WS请求(访问请求) {
   const 创建WS接口 = new WebSocketPair();
   const [客户端, WS接口] = Object.values(创建WS接口);
   WS接口.accept();
-  const 读取我的加密访问内容数据头 = 访问请求.headers.get(
-    "sec-websocket-protocol"
-  );
+  const 读取我的加密访问内容数据头 = 访问请求.headers.get("sec-websocket-protocol");
   const 解密数据 = 使用64位加解密(读取我的加密访问内容数据头); //解密目标访问数据，传递给TCP握手进程
   const { TCP接口, 写入初始数据 } = await 解析VL标头(解密数据); //解析VL数据并进行TCP握手
   建立传输管道(WS接口, TCP接口, 写入初始数据);
@@ -75,16 +73,12 @@ async function 升级WS请求(访问请求) {
 function 使用64位加解密(还原混淆字符) {
   还原混淆字符 = 还原混淆字符.replace(/-/g, "+").replace(/_/g, "/");
   const 解密数据 = atob(还原混淆字符);
-  const 解密_你_个_丁咚_咙_咚呛 = Uint8Array.from(解密数据, (c) =>
-    c.charCodeAt(0)
-  );
+  const 解密_你_个_丁咚_咙_咚呛 = Uint8Array.from(解密数据, (c) => c.charCodeAt(0));
   return 解密_你_个_丁咚_咙_咚呛.buffer;
 }
 //第二步，解读VL协议数据，创建TCP握手
 async function 解析VL标头(VL数据, TCP接口) {
-  if (
-    验证VL的密钥(new Uint8Array(VL数据.slice(1, 17))) !== 哎呀呀这是我的VL密钥
-  ) {
+  if (验证VL的密钥(new Uint8Array(VL数据.slice(1, 17))) !== 哎呀呀这是我的VL密钥) {
     return null;
   }
   const 获取数据定位 = new Uint8Array(VL数据)[17];
@@ -92,9 +86,7 @@ async function 解析VL标头(VL数据, TCP接口) {
   const 建立端口缓存 = VL数据.slice(提取端口索引, 提取端口索引 + 2);
   const 访问端口 = new DataView(建立端口缓存).getUint16(0);
   const 提取地址索引 = 提取端口索引 + 2;
-  const 建立地址缓存 = new Uint8Array(
-    VL数据.slice(提取地址索引, 提取地址索引 + 1)
-  );
+  const 建立地址缓存 = new Uint8Array(VL数据.slice(提取地址索引, 提取地址索引 + 1));
   const 识别地址类型 = 建立地址缓存[0];
   let 地址长度 = 0;
   let 访问地址 = "";
@@ -102,24 +94,16 @@ async function 解析VL标头(VL数据, TCP接口) {
   switch (识别地址类型) {
     case 1:
       地址长度 = 4;
-      访问地址 = new Uint8Array(
-        VL数据.slice(地址信息索引, 地址信息索引 + 地址长度)
-      ).join(".");
+      访问地址 = new Uint8Array(VL数据.slice(地址信息索引, 地址信息索引 + 地址长度)).join(".");
       break;
     case 2:
-      地址长度 = new Uint8Array(
-        VL数据.slice(地址信息索引, 地址信息索引 + 1)
-      )[0];
+      地址长度 = new Uint8Array(VL数据.slice(地址信息索引, 地址信息索引 + 1))[0];
       地址信息索引 += 1;
-      访问地址 = new TextDecoder().decode(
-        VL数据.slice(地址信息索引, 地址信息索引 + 地址长度)
-      );
+      访问地址 = new TextDecoder().decode(VL数据.slice(地址信息索引, 地址信息索引 + 地址长度));
       break;
     case 3:
       地址长度 = 16;
-      const dataView = new DataView(
-        VL数据.slice(地址信息索引, 地址信息索引 + 地址长度)
-      );
+      const dataView = new DataView(VL数据.slice(地址信息索引, 地址信息索引 + 地址长度));
       const ipv6 = [];
       for (let i = 0; i < 8; i++) {
         ipv6.push(dataView.getUint16(i * 2).toString(16));
@@ -153,28 +137,7 @@ async function 解析VL标头(VL数据, TCP接口) {
   }
 }
 function 验证VL的密钥(arr, offset = 0) {
-  const uuid = (
-    转换密钥格式[arr[offset + 0]] +
-    转换密钥格式[arr[offset + 1]] +
-    转换密钥格式[arr[offset + 2]] +
-    转换密钥格式[arr[offset + 3]] +
-    "-" +
-    转换密钥格式[arr[offset + 4]] +
-    转换密钥格式[arr[offset + 5]] +
-    "-" +
-    转换密钥格式[arr[offset + 6]] +
-    转换密钥格式[arr[offset + 7]] +
-    "-" +
-    转换密钥格式[arr[offset + 8]] +
-    转换密钥格式[arr[offset + 9]] +
-    "-" +
-    转换密钥格式[arr[offset + 10]] +
-    转换密钥格式[arr[offset + 11]] +
-    转换密钥格式[arr[offset + 12]] +
-    转换密钥格式[arr[offset + 13]] +
-    转换密钥格式[arr[offset + 14]] +
-    转换密钥格式[arr[offset + 15]]
-  ).toLowerCase();
+  const uuid = (转换密钥格式[arr[offset + 0]] + 转换密钥格式[arr[offset + 1]] + 转换密钥格式[arr[offset + 2]] + 转换密钥格式[arr[offset + 3]] + "-" + 转换密钥格式[arr[offset + 4]] + 转换密钥格式[arr[offset + 5]] + "-" + 转换密钥格式[arr[offset + 6]] + 转换密钥格式[arr[offset + 7]] + "-" + 转换密钥格式[arr[offset + 8]] + 转换密钥格式[arr[offset + 9]] + "-" + 转换密钥格式[arr[offset + 10]] + 转换密钥格式[arr[offset + 11]] + 转换密钥格式[arr[offset + 12]] + 转换密钥格式[arr[offset + 13]] + 转换密钥格式[arr[offset + 14]] + 转换密钥格式[arr[offset + 15]]).toLowerCase();
   return uuid;
 }
 const 转换密钥格式 = [];
@@ -222,9 +185,7 @@ async function 建立传输管道(WS接口, TCP接口, 写入初始数据) {
 }
 //////////////////////////////////////////////////////////////////////////SOCKS5部分//////////////////////////////////////////////////////////////////////
 async function 创建SOCKS5接口(识别地址类型, 访问地址, 访问端口) {
-  const { username, password, hostname, port } = await 获取SOCKS5账号(
-    我的SOCKS5账号
-  );
+  const { username, password, hostname, port } = await 获取SOCKS5账号(我的SOCKS5账号);
   const SOCKS5接口 = connect({ hostname, port });
   try {
     await SOCKS5接口.opened;
@@ -242,13 +203,7 @@ async function 创建SOCKS5接口(识别地址类型, 访问地址, 访问端口
     if (!username || !password) {
       return 关闭接口并退出();
     }
-    const authRequest = new Uint8Array([
-      1,
-      username.length,
-      ...encoder.encode(username),
-      password.length,
-      ...encoder.encode(password),
-    ]); // 发送用户名/密码认证请求
+    const authRequest = new Uint8Array([1, username.length, ...encoder.encode(username), password.length, ...encoder.encode(password)]); // 发送用户名/密码认证请求
     await writer.write(authRequest);
     res = (await reader.read()).value;
     if (res[0] !== 0x01 || res[1] !== 0x00) {
@@ -261,34 +216,15 @@ async function 创建SOCKS5接口(识别地址类型, 访问地址, 访问端口
       转换访问地址 = new Uint8Array([1, ...访问地址.split(".").map(Number)]);
       break;
     case 2: // 域名
-      转换访问地址 = new Uint8Array([
-        3,
-        访问地址.length,
-        ...encoder.encode(访问地址),
-      ]);
+      转换访问地址 = new Uint8Array([3, 访问地址.length, ...encoder.encode(访问地址)]);
       break;
     case 3: // IPv6
-      转换访问地址 = new Uint8Array([
-        4,
-        ...访问地址
-          .split(":")
-          .flatMap((x) => [
-            parseInt(x.slice(0, 2), 16),
-            parseInt(x.slice(2), 16),
-          ]),
-      ]);
+      转换访问地址 = new Uint8Array([4, ...访问地址.split(":").flatMap((x) => [parseInt(x.slice(0, 2), 16), parseInt(x.slice(2), 16)])]);
       break;
     default:
       return 关闭接口并退出();
   }
-  const socksRequest = new Uint8Array([
-    5,
-    1,
-    0,
-    ...转换访问地址,
-    访问端口 >> 8,
-    访问端口 & 0xff,
-  ]); //发送转换后的访问地址/端口
+  const socksRequest = new Uint8Array([5, 1, 0, ...转换访问地址, 访问端口 >> 8, 访问端口 & 0xff]); //发送转换后的访问地址/端口
   await writer.write(socksRequest);
   res = (await reader.read()).value;
   if (res[0] !== 0x05 || res[1] !== 0x00) {
