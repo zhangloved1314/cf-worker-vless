@@ -6,10 +6,8 @@ let 哎呀呀这是我的VL密钥 = "25284107-7424-40a5-8396-cdd0623f4f05"; // U
 let 我的优选 = []; // 节点列表
 let 我的优选TXT = []; // 优选TXT路径
 
-let 启用反代功能 = true; // 反代功能总开关
 let 反代IP = ""; // 反代IP或域名
 
-let 启用SOCKS5反代 = true; // 启用SOCKS5反代
 let 启用SOCKS5全局反代 = false; // 启用SOCKS5全局反代
 let 我的SOCKS5账号 = "shulng:shulng@188.68.234.53:21440"; // SOCKS5账号
 
@@ -112,26 +110,22 @@ async function 解析VL标头(VL数据, TCP接口) {
       break;
   }
   const 写入初始数据 = VL数据.slice(地址信息索引 + 地址长度);
-  if (启用反代功能 && 启用SOCKS5反代 && 启用SOCKS5全局反代) {
+  if (启用SOCKS5全局反代 && 我的SOCKS5账号) {
     TCP接口 = await 创建SOCKS5接口(识别地址类型, 访问地址, 访问端口);
-    return { TCP接口, 写入初始数据 };
   } else {
     try {
       TCP接口 = connect({ hostname: 访问地址, port: 访问端口 });
       await TCP接口.opened;
     } catch {
-      if (启用反代功能) {
-        if (启用SOCKS5反代) {
-          TCP接口 = await 创建SOCKS5接口(识别地址类型, 访问地址, 访问端口);
-        } else {
-          let [反代IP地址, 反代IP端口] = 反代IP.split(":");
-          TCP接口 = connect({ hostname: 反代IP地址, port: 反代IP端口 || 访问端口 });
-        }
+      if (我的SOCKS5账号) {
+        TCP接口 = await 创建SOCKS5接口(识别地址类型, 访问地址, 访问端口);
+      } else if (反代IP) {
+        let [反代IP地址, 反代IP端口] = 反代IP.split(":");
+        TCP接口 = connect({ hostname: 反代IP地址, port: 反代IP端口 || 访问端口 });
       }
-    } finally {
-      return { TCP接口, 写入初始数据 };
     }
   }
+  return { TCP接口, 写入初始数据 };
 }
 function 验证VL的密钥(arr, offset = 0) {
   const uuid = (转换密钥格式[arr[offset + 0]] + 转换密钥格式[arr[offset + 1]] + 转换密钥格式[arr[offset + 2]] + 转换密钥格式[arr[offset + 3]] + "-" + 转换密钥格式[arr[offset + 4]] + 转换密钥格式[arr[offset + 5]] + "-" + 转换密钥格式[arr[offset + 6]] + 转换密钥格式[arr[offset + 7]] + "-" + 转换密钥格式[arr[offset + 8]] + 转换密钥格式[arr[offset + 9]] + "-" + 转换密钥格式[arr[offset + 10]] + 转换密钥格式[arr[offset + 11]] + 转换密钥格式[arr[offset + 12]] + 转换密钥格式[arr[offset + 13]] + 转换密钥格式[arr[offset + 14]] + 转换密钥格式[arr[offset + 15]]).toLowerCase();
