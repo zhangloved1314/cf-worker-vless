@@ -314,5 +314,7 @@ proxy-groups:
 ${代理配置}
 rules:
 - MATCH,自动选择
+- GEOIP,CN,DIRECT
+- SRC-GEOIP,cn,DIRECT
 `;
 }
