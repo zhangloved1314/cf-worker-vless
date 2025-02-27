@@ -284,7 +284,7 @@ function 给我小猫咪配置文件(hostName) {
     server: ${地址}
     port: ${端口}
     uuid: ${哎呀呀这是我的VL密钥}
-    udp: true
+    udp: false
     tls: ${TLS开关}
     network: ws
     servername: ${hostName}
