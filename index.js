@@ -308,7 +308,7 @@ ${节点配置}
 proxy-groups:
   - name: "自动选择"
     type: url-test
-    url: "http://www.gstatic.com/generate_204"
+    url: "https://www.google.com/generate_204"
     interval: 300
     proxies:
 ${代理配置}
