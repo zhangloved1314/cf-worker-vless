@@ -4,7 +4,7 @@ let 哎呀呀这是我的ID啊 = "shulng"; // 订阅路径
 let 哎呀呀这是我的VL密钥 = "25284107-7424-40a5-8396-cdd0623f4f05"; // UUID
 
 let 我的优选 = []; // 节点列表
-let 我的优选TXT = ["https://raw.githubusercontent.com/lu-lingyun/CloudflareST/refs/heads/main/TLS.txt"]; // 优选TXT路径
+let 我的优选TXT = ["https://raw.githubusercontent.com/shulng/shulng/refs/heads/main/ip.txt", "https://raw.githubusercontent.com/lu-lingyun/CloudflareST/refs/heads/main/TLS.txt"]; // 优选TXT路径
 
 let 反代IP = ""; // 反代IP或域名
 
