@@ -312,6 +312,10 @@ proxy-groups:
     interval: 300
     proxies:
 ${代理配置}
+  - name: "全球直连"
+    type: select
+    proxies:
+      - DIRECT
 rules:
 - MATCH,自动选择
 - GEOIP,CN,DIRECT
