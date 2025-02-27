@@ -318,6 +318,6 @@ ${代理配置}
       - DIRECT
 rules:
 - MATCH,自动选择
-- GEOIP,CN,DIRECT
+- GEOIP,CN,全球直连
 `;
 }
