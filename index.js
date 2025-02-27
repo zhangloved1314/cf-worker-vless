@@ -279,20 +279,20 @@ function 给我小猫咪配置文件(hostName) {
       const 地址 = 拆分地址端口.join(":").replace(/^\[(.+)\]$/, "$1");
       const TLS开关 = tls === "notls" ? "false" : "true";
       return {
-        nodeConfig: `- name: ${节点名字}-${地址}-${端口}
-  type: ${转码}${转码2}
-  server: ${地址}
-  port: ${端口}
-  uuid: ${哎呀呀这是我的VL密钥}
-  udp: false
-  tls: ${TLS开关}
-  sni: ${hostName}
-  network: ws
-  ws-opts:
-    path: "/?ed=2560"
-    headers:
-      Host: ${hostName}`,
-        proxyConfig: `    - ${节点名字}-${地址}-${端口}`,
+        nodeConfig: `  - name: "${节点名字}-${地址}-${端口}"
+    type: ${转码}${转码2}
+    server: ${地址}
+    port: ${端口}
+    uuid: ${哎呀呀这是我的VL密钥}
+    udp: true
+    tls: ${TLS开关}
+    network: ws
+    servername: ${hostName}
+    ws-opts:
+      path: "/?ed=2560"
+      headers:
+        Host: ${hostName}`,
+        proxyConfig: `      - ${节点名字}-${地址}-${端口}`,
       };
     });
   };
@@ -303,49 +303,16 @@ function 给我小猫咪配置文件(hostName) {
     .map((node) => node.proxyConfig)
     .join("\n");
   return `
-dns:
-  nameserver:
-    - 180.76.76.76
-    - 2400:da00::6666
-  fallback:
-    - 8.8.8.8
-    - 2001:4860:4860::8888
 proxies:
 ${节点配置}
 proxy-groups:
-- name: 🚀 节点选择
-  type: select
-  proxies:
-    - 自动选择
+  - name: "自动选择"
+    type: url-test
+    url: "https://www.google.com/generate_204"
+    interval: 300
+    proxies:
 ${代理配置}
-- name: 自动选择
-  type: url-test
-  url: http://www.gstatic.com/generate_204
-  interval: 60 #测试间隔
-  tolerance: 30
-  proxies:
-${代理配置}
-- name: 漏网之鱼
-  type: select
-  proxies:
-    - DIRECT
-    - 🚀 节点选择
-rules: # 本人自用规则，不一定适合所有人所有客户端，如客户端因规则问题无法订阅就删除对应规则吧，每个人都有自己习惯的规则，自行研究哦
-# 策略规则，建议使用meta内核，部分规则需打开${小猫}${咪} mate的使用geoip dat版数据库，比如TG规则就需要，或者自定义geoip的规则订阅
-# 这是geoip的规则订阅链接，https://cdn.jsdelivr.net/gh/Loyalsoldier/geoip@release/Country.mmdb
-# - GEOSITE,category-ads-all,REJECT #简单广告过滤规则，要增加规则数可使用category-ads-all
-- GEOSITE,cn,DIRECT #国内域名直连规则
-- GEOIP,CN,DIRECT,no-resolve #国内IP直连规则
-- GEOSITE,cloudflare,DIRECT #CF域名直连规则
-- GEOIP,CLOUDFLARE,DIRECT,no-resolve #CFIP直连规则
-- GEOSITE,gfw,🚀 节点选择 #GFW域名规则
-- GEOSITE,google,🚀 节点选择 #GOOGLE域名规则
-- GEOIP,GOOGLE,🚀 节点选择,no-resolve #GOOGLE IP规则
-- GEOSITE,netflix,🚀 节点选择 #奈飞域名规则
-- GEOIP,NETFLIX,🚀 节点选择,no-resolve #奈飞IP规则
-- GEOSITE,telegram,🚀 节点选择 #TG域名规则
-- GEOIP,TELEGRAM,🚀 节点选择,no-resolve #TG IP规则
-- GEOSITE,openai,🚀 节点选择 #GPT规则
-- MATCH,漏网之鱼
+rules:
+- MATCH,自动选择
 `;
 }
