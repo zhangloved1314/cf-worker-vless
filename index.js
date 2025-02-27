@@ -292,7 +292,7 @@ function 给我小猫咪配置文件(hostName) {
       path: "/?ed=2560"
       headers:
         Host: ${hostName}`,
-        proxyConfig: `      - ${节点名字}-${地址}-${端口}`,
+        proxyConfig: `      - "${节点名字}-${地址}-${端口}"`,
       };
     });
   };
