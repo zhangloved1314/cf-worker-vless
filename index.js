@@ -307,9 +307,9 @@ proxies:
 ${节点配置}
 proxy-groups:
   - name: "自动选择"
-    type: url-test
+    type: fallback
     url: "https://www.google.com/generate_204"
-    interval: 300
+    interval: 60
     proxies:
 ${代理配置}
 rules:
