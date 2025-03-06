@@ -313,8 +313,8 @@ proxy-groups:
     proxies:
 ${代理配置}
 rules:
-- GEOIP,LAN,DIRECT
-- GEOIP,CN,DIRECT
-- MATCH,自动选择
+  - GEOIP,LAN,DIRECT
+  - GEOIP,CN,DIRECT
+  - MATCH,自动选择
 `;
 }
