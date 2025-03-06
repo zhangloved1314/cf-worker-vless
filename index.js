@@ -276,7 +276,7 @@ function 给我小猫咪配置文件(hostName) {
       const [地址端口, 节点名字 = 我的节点名字] = 主内容.split("#");
       const 拆分地址端口 = 地址端口.split(":");
       const 端口 = 拆分地址端口.length > 1 ? Number(拆分地址端口.pop()) : 443;
-      const 地址 = 拆分地址端口.join(":").replace(/^\[(.+)\]$/, "$1");
+      const 地址 = 拆分地址端口.join(":").replace(/^\[|\]/g, "");
       const TLS开关 = tls === "notls" ? "false" : "true";
       return {
         nodeConfig: `  - name: "${节点名字}-${地址}-${端口}"
