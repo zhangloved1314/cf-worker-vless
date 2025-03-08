@@ -6,7 +6,7 @@ let 哎呀呀这是我的VL密钥 = "25284107-7424-40a5-8396-cdd0623f4f05"; // U
 let 我的优选 = []; // 节点列表
 let 我的优选TXT = ["https://raw.githubusercontent.com/shulng/shulng/refs/heads/main/ip.txt"]; // 优选TXT路径
 
-let 反代IP = ""; // 反代IP或域名
+let 反代IP = "ts.hpc.tw:443"; // 反代IP或域名
 
 let 启用SOCKS5全局反代 = false; // 启用SOCKS5全局反代
 let 我的SOCKS5账号 = "shulng:shulng@188.68.234.53:21440"; // SOCKS5账号
@@ -114,14 +114,20 @@ async function 解析VL标头(VL数据, TCP接口) {
     TCP接口 = await 创建SOCKS5接口(识别地址类型, 访问地址, 访问端口);
   } else {
     try {
-      TCP接口 = connect({ hostname: 访问地址, port: 访问端口 });
-      await TCP接口.opened;
+      TCP接口 = await connect({ hostname: 访问地址, port: 访问端口 });
     } catch {
       if (我的SOCKS5账号) {
-        TCP接口 = await 创建SOCKS5接口(识别地址类型, 访问地址, 访问端口);
+        try {
+          TCP接口 = await 创建SOCKS5接口(识别地址类型, 访问地址, 访问端口);
+        } catch {
+          if (反代IP) {
+            let [反代IP地址, 反代IP端口] = 反代IP.split(":");
+            TCP接口 = await connect({ hostname: 反代IP地址, port: 反代IP端口 || 访问端口 });
+          }
+        }
       } else if (反代IP) {
         let [反代IP地址, 反代IP端口] = 反代IP.split(":");
-        TCP接口 = connect({ hostname: 反代IP地址, port: 反代IP端口 || 访问端口 });
+        TCP接口 = await connect({ hostname: 反代IP地址, port: 反代IP端口 || 访问端口 });
       }
     }
   }
