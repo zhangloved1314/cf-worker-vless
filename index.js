@@ -311,6 +311,9 @@ function 给我小猫咪配置文件(hostName) {
     .map((node) => node.proxyConfig)
     .join("\n");
   return `
+geodata-mode: true
+geox-url:
+  geoip: "https://cdn.jsdelivr.net/gh/Loyalsoldier/geoip@release/cn.dat"
 proxies:
 ${节点配置}
 proxy-groups:
