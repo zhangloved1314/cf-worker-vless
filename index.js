@@ -320,7 +320,8 @@ proxy-groups:
   - name: "自动选择"
     type: fallback
     url: "https://www.google.com/generate_204"
-    interval: 60
+    interval: 30
+    tolerance: 50
     proxies:
 ${代理配置}
 rules:
